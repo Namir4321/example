@@ -1,0 +1,51 @@
+import { createSlice } from '@reduxjs/toolkit'
+import { userlogin } from './ApiCall';
+const UserSlice=createSlice({
+name:"User",
+initialState:{
+    id:"",
+    name:"",
+    email:"",
+    role:"",
+    accessToken:"",
+    message:"",
+    isError:false,
+    isFetching:false,
+},
+reducers:{},
+extraReducers:{
+    [userlogin.pending]:(state)=>{
+        state.id="";
+        state.name="";
+        state.email='';
+        state.accessToken="";
+        state.message="";
+        state.role="";
+        state.isFetching=true;
+        state.isError=false
+    },
+    [userlogin.fulfilled]:(state,action)=>{
+        console.log(action.payload)
+         state.id=action.payload.user._id;
+        state.name=action.payload.user.name;
+        state.email=action.payload.user.email;
+        state.accessToken=action.payload.accessToken;
+        state.message=action.payload.message;
+        state.role=action.payload.user.role;
+        state.isFetching=false;
+        state.isError=false
+    },
+    [userlogin.rejected]:(state)=>{
+  state.id="";
+        state.id="";
+        state.name="";
+        state.email='';
+        state.accessToken="";
+        state.message="";
+        state.role="";
+        state.isFetching=false;
+        state.isError=true;
+    }
+}
+})
+export default UserSlice.reducer;

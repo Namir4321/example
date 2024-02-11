@@ -1,23 +1,29 @@
 import logo from './logo.svg';
 import './App.css';
-
+import { LoginPage } from './Pages/LoginPage.js/LoginPage';
+import {Routes,Route,Redirect,Navigate} from "react-router-dom";
+import { Signin } from './Components/Signin/Signin';
+import { Signup } from './Components/Signup/Signup';
+import { useSelector } from 'react-redux';
+import { AdminControls } from './Components/Admindetails/AdminControls';
+import { EmployeePortal } from './Components/EmployeePortal/EmployeePortal';
+import { Sellsmade } from './Components/sellmade/Sellsmade';
+import { SellsDetails } from './Components/sellmade/SellsDetails';
 function App() {
+  const user=useSelector((state)=>state.user);
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <Routes>
+
+    <Route path="/"  element={<Signin/>}/>
+    <Route path="/register"  element={<Signup/>}/>
+    <Route path="/add"  element={<AdminControls/>}/>
+    <Route path="/sell"  element={<EmployeePortal/>}/>
+    <Route path="/sellsmade"  element={<Sellsmade/>}/>
+  <Route path="/selldetail/:sellsId" element={<SellsDetails/>}/>
+  
+    </Routes>
     </div>
   );
 }
