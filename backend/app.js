@@ -1,20 +1,26 @@
-const express=require("express")
-var cors = require('cors')
-const bodyParser = require("body-parser");
-const AuthRoute=require("./routes/Authroute");
+require("dotenv").config();
+const express=require("express");
+const bodyParser=require("body-parser");
 const mongoose=require("mongoose");
+const cors=require("cors")
 const app=express();
-const port=8080;
-app.use(express.json());
-app.use(bodyParser.urlencoded({extended:true}))
+const port=process.env.PORT||8000;
+const AuthRoute=require("./Routes/AuthRoutes");
+const FuelRoute=require("./Routes/FuelRoutes");
+const SellRoute=require("./Routes/SelledRoutes");
+app.use(express.json())
+app.use(bodyParser.urlencoded({extended:true}));
 app.use(cors({
-    origin:"*",
+    origin:"http://localhost:3000",
     credentials: true,
 }))
 app.use("/api/auth",AuthRoute);
-mongoose.connect("mongodb://127.0.0.1:27017/rolebased", { useNewUrlParser: true, useUnifiedTopology: true })
-
-app.listen(8080,()=>{
-    console.log(`listing on port ${port}`)
+app.use("/api/fuel",FuelRoute);
+app.use("/api/selling",SellRoute)
+mongoose.connect(process.env.MONGODB_URL).then(()=>{
+    console.log("connected")
 })
+app.listen(port,()=>{
+    console.log(`listning on port ${port}`)
 
+})

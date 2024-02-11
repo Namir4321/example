@@ -1,26 +1,40 @@
 const User=require("../Model/User")
+const bcrypt=require("bcryptjs");
+const jwt=require("jsonwebtoken")
 exports.postsignup=async(req,res,next)=>{
-const {firstname,lastname,email,password}=req.body;
+const {name,email,password}=req.body;
+console.log(req.body)
 const newUser=new User({
-    firstname:firstname,
-    lastname:lastname,
+    name:name,
     email:email,
     password:password,
 })
-const savedUser=await newUser.save()
-res.status(200).json({message:"registered",savedUser});
-console.log(req.body);
+try{
+ const token=await newUser.generateAuthToken();
+    const savedUser = await newUser.save();
+    res.status(201).json(savedUser)
+}catch(error){
+ console.log(error);
+    res.status(500).json(error);
+}
+
 }
 exports.postsignin=async(req,res,next)=>{
-const {email,password}=req.body;
-try{
-
-const user=await User.findOne({email});
+ const {email,password}=req.body;
+    console.log({email,password})
+   try{
+    const user=await User.findOne({email})
 if(user){
-    res.status(200).json(user)
-}
+    const isMatch=await bcrypt.compare(password,user.password) 
+  const secret=user._id + process.env.ONE_SECRET_KEY;
+  const accessToken=jwt.sign({userId:user._id,name:user.name},secret,
+    {expiresIn:"3d"
+});  
+  console.log(user)
+  res.status(200).json({message:"loggedIn",user,accessToken})
+   }else{
+    res.status(400)
+   }}catch(err){
 
-}catch(err){
-    console.log(err)
-}
+   }
 }
